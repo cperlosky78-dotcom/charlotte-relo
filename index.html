@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CharlotteRelo â Concierge Relocation with Mike</title>
+  <script>
+  // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  //  WHITE-LABEL CONFIG â only edit this block to onboard a new client
+  // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  const CONFIG = {
+    // ââ Agent âââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    agentName:    "Mike",
+    agentInitial: "M",
+    agentRole:    "Charlotte Relocation Specialist",
+    agentBio:     `"Most people relocating to Charlotte spend weeks piecing together information that I can hand them in 20 minutes. I built this platform so that every client â whether they work with me or not â arrives informed, prepared, and with money in their pocket."`,
+    agentYears:   "12+",
+    agentClients: "400+",
+    agentRating:  "5â",
+    agentEmail:   "mike@charlottencrelo.com",
+
+    // ââ Airtable (lead capture) ââââââââââââââââââââââââââââââââââââ
+    airtablePAT:  "patueogeS6dfYpcbK.ed22f0b7ef93c8ec4ee31800a40495111c419a09df7ffd1097587295b03f9fa4",
+    airtableURL:  "https://api.airtable.com/v0/apptiWQi7iDXnBSgX/tbl1ABLngobSkxaPP",
+
+    // ââ Base44 backend âââââââââââââââââââââââââââââââââââââââââââââ
+    base44URL:    "https://charlotte-relocation-guide-f2d6beea.base44.app",
+
+    // ââ IDX: paste client's embed code between the backticks âââââââ
+    idxEmbedCode: ``,
+  };
+  // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; }
+    .page { background: #0a0f1e; color: #e8eaf0; }
+
+    /* NAV */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 48px; border-bottom: 0.5px solid rgba(255,255,255,0.08); background: rgba(10,15,30,0.95); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); }
+    .logo-wrap { display: flex; align-items: center; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { font-size: 13px; color: rgba(232,234,240,0.6); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+    .nav-links a:hover { color: #c8a96e; }
+    .nav-cta { background: #c8a96e; color: #0a0f1e; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 4px; border: none; cursor: pointer; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* HERO */
+    .hero { min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 48px 70px; position: relative; background: linear-gradient(180deg, #0c1428 0%, #0a0f1e 100%); overflow: hidden; }
+    .hero-glow { position: absolute; top: 35%; left: 50%; transform: translate(-50%,-50%); width: 700px; height: 250px; background: radial-gradient(ellipse, rgba(56,98,168,0.22) 0%, transparent 70%); pointer-events: none; }
+    .hero-lines { position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, transparent 1px, transparent 60px, rgba(255,255,255,0.02) 61px); pointer-events: none; }
+    .hero-tag { font-size: 11px; letter-spacing: 0.18em; color: #c8a96e; text-transform: uppercase; margin-bottom: 20px; position: relative; display: flex; align-items: center; gap: 10px; }
+    .hero-tag::before, .hero-tag::after { content: ''; width: 28px; height: 0.5px; background: #c8a96e; opacity: 0.5; }
+    .hero h1 { font-size: 50px; font-weight: 500; line-height: 1.15; color: #ffffff; max-width: 680px; margin-bottom: 22px; position: relative; letter-spacing: -0.01em; }
+    .hero h1 em { color: #c8a96e; font-style: normal; }
+    .hero p { font-size: 17px; color: rgba(232,234,240,0.58); max-width: 540px; line-height: 1.85; margin-bottom: 40px; position: relative; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; position: relative; }
+    .btn-gold { background: #c8a96e; color: #0a0f1e; font-size: 14px; font-weight: 600; padding: 14px 30px; border-radius: 4px; border: none; cursor: pointer; transition: opacity 0.2s; }
+    .btn-gold:hover { opacity: 0.88; }
+    .btn-outline { background: transparent; color: #c8a96e; font-size: 14px; font-weight: 500; padding: 14px 30px; border-radius: 4px; border: 1px solid rgba(200,169,110,0.4); cursor: pointer; transition: border-color 0.2s; }
+    .btn-outline:hover { border-color: #c8a96e; }
+
+    /* STATS */
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 0.5px solid rgba(255,255,255,0.07); border-bottom: 0.5px solid rgba(255,255,255,0.07); background: #0d1529; }
+    .stat-item { padding: 26px 32px; text-align: center; border-right: 0.5px solid rgba(255,255,255,0.07); }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-size: 26px; font-weight: 500; color: #c8a96e; }
+    .stat-label { font-size: 11px; color: rgba(232,234,240,0.42); margin-top: 5px; letter-spacing: 0.05em; }
+
+    /* SECTIONS */
+    .section { padding: 80px 48px; }
+    .section-tag { font-size: 11px; letter-spacing: 0.16em; color: #c8a96e; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-size: 30px; font-weight: 500; color: #ffffff; margin-bottom: 12px; letter-spacing: -0.01em; }
+    .section-sub { font-size: 15px; color: rgba(232,234,240,0.48); margin-bottom: 44px; max-width: 560px; line-height: 1.85; }
+
+    /* NEIGHBORHOODS */
+    .nbhd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+    .nbhd-loading { font-size: 13px; color: rgba(232,234,240,0.35); letter-spacing: 0.06em; padding: 32px 0; }
+    .nbhd-error { font-size: 13px; color: rgba(220,100,80,0.7); padding: 16px 0; }
+    .nbhd-card { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.09); border-radius: 10px; padding: 26px 22px; cursor: pointer; transition: border-color 0.2s, transform 0.2s; }
+    .nbhd-card:hover { border-color: rgba(200,169,110,0.5); transform: translateY(-2px); }
+    .nbhd-vibe { font-size: 10px; letter-spacing: 0.13em; color: #c8a96e; text-transform: uppercase; margin-bottom: 10px; }
+    .nbhd-name { font-size: 18px; font-weight: 500; color: #ffffff; margin-bottom: 6px; }
+    .nbhd-price { font-size: 13px; color: rgba(232,234,240,0.48); margin-bottom: 14px; }
+    .nbhd-tip { font-size: 12px; color: rgba(232,234,240,0.38); line-height: 1.65; border-top: 0.5px solid rgba(255,255,255,0.08); padding-top: 12px; }
+
+    /* DOWN PAYMENT */
+    .dp-section { background: #0d1529; }
+    .dp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .dp-card { background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 28px 24px; transition: border-color 0.2s; }
+    .dp-card:hover { border-color: rgba(200,169,110,0.3); }
+    .dp-badge { display: inline-block; font-size: 10px; letter-spacing: 0.1em; color: #c8a96e; background: rgba(200,169,110,0.1); border: 0.5px solid rgba(200,169,110,0.25); padding: 4px 10px; border-radius: 3px; text-transform: uppercase; margin-bottom: 14px; }
+    .dp-amount { font-size: 30px; font-weight: 500; color: #ffffff; margin-bottom: 6px; }
+    .dp-name { font-size: 13px; color: rgba(232,234,240,0.7); margin-bottom: 8px; font-weight: 500; }
+    .dp-desc { font-size: 12px; color: rgba(232,234,240,0.38); line-height: 1.65; }
+
+    /* VENDORS */
+    .vendor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    .vendor-card { background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 20px 18px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s; }
+    .vendor-card:hover { border-color: rgba(200,169,110,0.3); }
+    .vendor-cat { font-size: 10px; letter-spacing: 0.1em; color: rgba(232,234,240,0.38); text-transform: uppercase; }
+    .vendor-name { font-size: 14px; font-weight: 500; color: #e8eaf0; }
+    .vendor-status { display: inline-block; font-size: 10px; padding: 3px 9px; border-radius: 3px; font-weight: 500; }
+    .vetted { background: rgba(29,158,117,0.15); color: #5dcaa5; border: 0.5px solid rgba(29,158,117,0.3); }
+    .preferred { background: rgba(200,169,110,0.12); color: #c8a96e; border: 0.5px solid rgba(200,169,110,0.3); }
+
+    /* IDX SEARCH */
+    .idx-section { background: #0a0f1e; border-top: 0.5px solid rgba(255,255,255,0.06); border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+    .idx-inner { max-width: 900px; }
+    .idx-search-box { background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
+    .idx-search-header { padding: 28px 32px 24px; border-bottom: 0.5px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .idx-search-title { font-size: 18px; font-weight: 500; color: #ffffff; }
+    .idx-search-sub { font-size: 13px; color: rgba(232,234,240,0.4); margin-top: 4px; }
+    .idx-filters { display: flex; gap: 10px; flex-wrap: wrap; padding: 20px 32px; border-bottom: 0.5px solid rgba(255,255,255,0.07); }
+    .idx-filter { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 16px; font-size: 13px; color: rgba(232,234,240,0.6); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .idx-filter:hover, .idx-filter.active { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.4); color: #c8a96e; }
+    .idx-embed-area { padding: 32px; min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .idx-placeholder-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(200,169,110,0.1); border: 0.5px solid rgba(200,169,110,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 24px; }
+    .idx-placeholder-title { font-size: 18px; font-weight: 500; color: #ffffff; margin-bottom: 10px; }
+    .idx-placeholder-text { font-size: 14px; color: rgba(232,234,240,0.45); line-height: 1.8; max-width: 420px; margin-bottom: 24px; }
+    .idx-placeholder-code { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 12px 20px; font-family: monospace; font-size: 12px; color: #c8a96e; margin-bottom: 20px; width: 100%; max-width: 480px; text-align: left; }
+    .idx-listings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; width: 100%; }
+    .idx-listing-card { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.09); border-radius: 10px; overflow: hidden; text-align: left; }
+    .idx-listing-img { height: 150px; background: linear-gradient(135deg, #1a2540, #1e2d50); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .idx-listing-body { padding: 16px; }
+    .idx-listing-price { font-size: 18px; font-weight: 500; color: #ffffff; margin-bottom: 4px; }
+    .idx-listing-addr { font-size: 12px; color: rgba(232,234,240,0.5); margin-bottom: 10px; }
+    .idx-listing-meta { display: flex; gap: 12px; font-size: 11px; color: rgba(232,234,240,0.4); }
+    .idx-listing-badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 3px; background: rgba(200,169,110,0.12); color: #c8a96e; border: 0.5px solid rgba(200,169,110,0.25); margin-bottom: 8px; }
+
+    /* AGENT */
+    .agent-section { background: #0d1529; }
+    .agent-inner { display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: start; max-width: 900px; }
+    .agent-avatar { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #1a2540, #253260); border: 2px solid rgba(200,169,110,0.45); display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 500; color: #c8a96e; margin-bottom: 20px; }
+    .agent-title { font-size: 11px; letter-spacing: 0.16em; color: #c8a96e; text-transform: uppercase; margin-bottom: 8px; }
+    .agent-name { font-size: 28px; font-weight: 500; color: #ffffff; margin-bottom: 6px; }
+    .agent-role { font-size: 14px; color: rgba(232,234,240,0.48); margin-bottom: 26px; }
+    .agent-stats { display: flex; gap: 32px; margin-bottom: 30px; }
+    .ag-stat-num { font-size: 24px; font-weight: 500; color: #c8a96e; }
+    .ag-stat-label { font-size: 11px; color: rgba(232,234,240,0.38); margin-top: 3px; }
+    .agent-bio { font-size: 15px; color: rgba(232,234,240,0.58); line-height: 1.95; margin-bottom: 28px; font-style: italic; border-left: 2px solid rgba(200,169,110,0.3); padding-left: 20px; }
+
+    /* LEAD CAPTURE */
+    .lead-section { background: linear-gradient(135deg, #0d1529 0%, #111d38 100%); border-top: 0.5px solid rgba(255,255,255,0.06); }
+    .lead-inner { max-width: 640px; text-align: center; margin: 0 auto; }
+    .lead-form { display: flex; flex-direction: column; gap: 14px; margin-top: 36px; }
+    .lead-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .lead-input { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 14px 18px; font-size: 14px; color: #e8eaf0; outline: none; transition: border-color 0.2s; font-family: inherit; }
+    .lead-input::placeholder { color: rgba(232,234,240,0.3); }
+    .lead-input:focus { border-color: rgba(200,169,110,0.5); }
+    .lead-select { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 14px 18px; font-size: 14px; color: rgba(232,234,240,0.7); outline: none; font-family: inherit; cursor: pointer; }
+    .lead-select option { background: #0d1529; }
+    .lead-submit { background: #c8a96e; color: #0a0f1e; font-size: 15px; font-weight: 600; padding: 16px; border-radius: 6px; border: none; cursor: pointer; transition: opacity 0.2s; margin-top: 4px; }
+    .lead-submit:hover { opacity: 0.88; }
+    .lead-privacy { font-size: 11px; color: rgba(232,234,240,0.28); margin-top: 10px; }
+    #lead-success { display: none; background: rgba(29,158,117,0.12); border: 0.5px solid rgba(29,158,117,0.3); border-radius: 8px; padding: 20px; color: #5dcaa5; font-size: 14px; margin-top: 16px; }
+
+    /* FOOTER */
+    .footer { border-top: 0.5px solid rgba(255,255,255,0.07); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-text { font-size: 12px; color: rgba(232,234,240,0.28); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 12px; color: rgba(232,234,240,0.28); text-decoration: none; cursor: pointer; }
+    .footer-links a:hover { color: #c8a96e; }
+
+    /* ââ MOBILE âââââââââââââââââââââââââââââââââââââââââââââââ */
+    @media (max-width: 640px) {
+      .nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { font-size: 12px; padding: 8px 14px; }
+      .hero { padding: 56px 20px 40px; }
+      .hero h1 { font-size: 30px; }
+      .hero p { font-size: 15px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(3) { border-top: 0.5px solid rgba(255,255,255,0.07); }
+      .stat-item:nth-child(4) { border-top: 0.5px solid rgba(255,255,255,0.07); }
+      .section { padding: 52px 20px; }
+      .nbhd-grid { grid-template-columns: 1fr; }
+      .dp-grid { grid-template-columns: 1fr; }
+      .vendor-grid { grid-template-columns: repeat(2, 1fr); }
+      .agent-inner { grid-template-columns: 1fr; gap: 28px; }
+      .agent-stats { gap: 20px; }
+      .lead-row { grid-template-columns: 1fr; }
+      .footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="logo-wrap">
+      <svg viewBox="0 0 200 44" width="180" height="40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="22" r="14" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
+        <ellipse cx="24" cy="22" rx="14" ry="5" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+        <ellipse cx="24" cy="22" rx="6" ry="14" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+        <line x1="10" y1="22" x2="38" y2="22" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+        <circle cx="24" cy="13" r="3" fill="#c8a96e"/>
+        <circle cx="24" cy="13" r="1.2" fill="#0a0f1e"/>
+        <text x="48" y="20" font-family="Inter,sans-serif" font-size="15" font-weight="500" fill="#ffffff" letter-spacing="0.01em">Charlotte<tspan font-weight="400" fill="#c8a96e">Relo</tspan></text>
+        <text x="49" y="33" font-family="Inter,sans-serif" font-size="8.5" font-weight="400" letter-spacing="0.22em" fill="rgba(232,234,240,0.35)">CONCIERGE RELOCATION</text>
+      </svg>
+    </div>
+    <div class="nav-links">
+      <a>Neighborhoods</a>
+      <a>Search Homes</a>
+      <a>Programs</a>
+      <a>Vendors</a>
+      <a id="cfg-nav-agent">Meet Mike</a>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('lead-section').scrollIntoView({behavior:'smooth'})">Book a Free Consult</button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-lines"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-tag">Charlotte's #1 concierge relocation guide</div>
+    <h1>Stop guessing.<br>Move to Charlotte like you <em>already live here.</em></h1>
+    <p>Real neighborhood data. Vetted local partners. Up to $80,000 in assistance most buyers never claim. Mike makes your move seamless â from first search to closing day.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="document.getElementById('lead-section').scrollIntoView({behavior:'smooth'})">Get my free relocation guide</button>
+      <button class="btn-outline" onclick="document.getElementById('idx-section').scrollIntoView({behavior:'smooth'})">Search Charlotte homes â</button>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">$413k</div><div class="stat-label">Median home price</div></div>
+    <div class="stat-item"><div class="stat-num">$80k</div><div class="stat-label">Max down payment assist</div></div>
+    <div class="stat-item"><div class="stat-num">400+</div><div class="stat-label">Families relocated by Mike</div></div>
+    <div class="stat-item"><div class="stat-num">12+</div><div class="stat-label">Years in Charlotte</div></div>
+  </div>
+
+  <!-- NEIGHBORHOODS -->
+  <section class="section">
+    <div class="section-tag">Find your fit</div>
+    <div class="section-title">Not all of Charlotte is the same. Here's the difference.</div>
+    <div class="section-sub">Each guide is built from live market data and Mike's firsthand knowledge â not Zillow estimates and generic blog posts.</div>
+    <div class="nbhd-grid" id="nbhd-grid">
+      <div class="nbhd-loading">Loading neighborhoods...</div>
+    </div>
+    <script>
+      async function loadNeighborhoods() {
+        const grid = document.getElementById("nbhd-grid");
+        try {
+          const res = await fetch(CONFIG.base44URL + "/functions/getNeighborhoods");
+          if (!res.ok) throw new Error("Failed to fetch");
+          const neighborhoods = await res.json();
+          if (!neighborhoods.length) {
+            grid.innerHTML = '<div class="nbhd-error">No neighborhoods found.</div>';
+            return;
+          }
+          grid.innerHTML = neighborhoods.map(n => `
+            <div class="nbhd-card">
+              <div class="nbhd-vibe">${n.vibe || ''}</div>
+              <div class="nbhd-name">${n.name}</div>
+              <div class="nbhd-price">${n.medianPrice ? "From $" + Number(n.medianPrice).toLocaleString() : "Price on request"}</div>
+              <div class="nbhd-tip">${n.insiderTip || ''}</div>
+            </div>
+          `).join("");
+        } catch (err) {
+          grid.innerHTML = '<div class="nbhd-error">Unable to load neighborhoods right now.</div>';
+          console.error(err);
+        }
+      }
+      loadNeighborhoods();
+    </script>
+  </section>
+
+  <!-- IDX HOME SEARCH -->
+  <section class="section idx-section" id="idx-section">
+    <div class="idx-inner">
+      <div class="section-tag">Live MLS listings</div>
+      <div class="section-title">Search Charlotte homes â updated daily.</div>
+      <div class="section-sub">Browse active listings across every Charlotte neighborhood. Filter by price, beds, and area. New homes added every day.</div>
+      <div class="idx-search-box">
+        <div class="idx-search-header">
+          <div>
+            <div class="idx-search-title">Charlotte MLS Search</div>
+            <div class="idx-search-sub">Powered by Mike's IDX Â· Live data Â· Updated daily</div>
+          </div>
+          <button class="btn-gold" style="font-size:13px;padding:10px 20px;">View All Listings â</button>
+        </div>
+        <div class="idx-filters">
+          <div class="idx-filter active">All Homes</div>
+          <div class="idx-filter">Under $400k</div>
+          <div class="idx-filter">$400kâ$600k</div>
+          <div class="idx-filter">$600k+</div>
+          <div class="idx-filter">New Construction</div>
+          <div class="idx-filter">South End</div>
+          <div class="idx-filter">Dilworth</div>
+          <div class="idx-filter">Ballantyne</div>
+          <div class="idx-filter">NoDa</div>
+        </div>
+        <div class="idx-embed-area" id="idx-embed">
+          <!-- PASTE YOUR IDX EMBED CODE HERE -->
+          <!-- Example: <script src="https://showcaseidx.com/widget/YOUR_IDX_CODE.js"><\/script> -->
+          <div class="idx-placeholder-icon">ð¡</div>
+          <div class="idx-placeholder-title">Connect Your IDX Feed</div>
+          <div class="idx-placeholder-text">Paste your IDX widget embed code below to display live MLS listings. Works with Showcase IDX, IDX Broker, iHomeFinder, and most major providers.</div>
+          <div class="idx-placeholder-code">
+            &lt;!-- Replace this block with your IDX embed code --&gt;<br>
+            &lt;!-- Your IDX provider will give you a &lt;script&gt; tag --&gt;<br>
+            &lt;!-- or an &lt;iframe&gt; â drop it right here --&gt;
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:720px;opacity:0.45;">
+            <div class="idx-listing-card"><div class="idx-listing-img">ð </div><div class="idx-listing-body"><div class="idx-listing-badge">Active</div><div class="idx-listing-price">$449,000</div><div class="idx-listing-addr">214 Tremont Ave Â· South End</div><div class="idx-listing-meta"><span>3 bd</span><span>2 ba</span><span>1,820 sf</span></div></div></div>
+            <div class="idx-listing-card"><div class="idx-listing-img">ð¡</div><div class="idx-listing-body"><div class="idx-listing-badge">Active</div><div class="idx-listing-price">$529,000</div><div class="idx-listing-addr">88 Dilworth Rd Â· Dilworth</div><div class="idx-listing-meta"><span>4 bd</span><span>3 ba</span><span>2,240 sf</span></div></div></div>
+            <div class="idx-listing-card"><div class="idx-listing-img">ðï¸</div><div class="idx-listing-body"><div class="idx-listing-badge">Active</div><div class="idx-listing-price">$379,000</div><div class="idx-listing-addr">1102 Ballantyne Commons Â· Ballantyne</div><div class="idx-listing-meta"><span>3 bd</span><span>2 ba</span><span>1,650 sf</span></div></div></div>
+          </div>
+          <div style="margin-top:18px;font-size:12px;color:rgba(232,234,240,0.25);">Sample listings shown Â· Connect IDX for live data</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.querySelectorAll('.idx-filter').forEach(f => {
+        f.addEventListener('click', () => {
+          document.querySelectorAll('.idx-filter').forEach(x => x.classList.remove('active'));
+          f.classList.add('active');
+        });
+      });
+    </script>
+  </section>
+
+  <!-- DOWN PAYMENT -->
+  <section class="section dp-section">
+    <div class="section-tag">Money left on the table</div>
+    <div class="section-title">Most buyers leave Charlotte money behind. Don't be one of them.</div>
+    <div class="section-sub">Between the House Charlotte program, NC state assistance, and local grants â qualified buyers can access up to $80,000 in forgivable funds. Mike will help you find out what you qualify for.</div>
+    <div class="dp-grid">
+      <div class="dp-card"><div class="dp-badge">House Charlotte</div><div class="dp-amount">Up to $80k</div><div class="dp-name">Down payment assistance</div><div class="dp-desc">Forgivable assistance for first-time buyers. Base grant of $30k with potential match up to $80k depending on eligibility.</div></div>
+      <div class="dp-card"><div class="dp-badge">NC 1st Home Advantage</div><div class="dp-amount">$15,000</div><div class="dp-name">Veterans & first-time buyers</div><div class="dp-desc">Forgivable down payment assistance after 15 years. Available to qualifying veterans and first-time buyers statewide.</div></div>
+      <div class="dp-card"><div class="dp-badge">HOMES Grant</div><div class="dp-amount">$650/yr</div><div class="dp-name">Annual tax relief</div><div class="dp-desc">Property tax relief for qualifying residents with 3+ years of Mecklenburg County residency.</div></div>
+      <div class="dp-card"><div class="dp-badge">Mecklenburg Rate</div><div class="dp-amount">0.4927%</div><div class="dp-name">FY2026 property tax rate</div><div class="dp-desc">Roughly $493 per $100k of assessed value â one of the more competitive rates in major metro areas.</div></div>
+    </div>
+  </section>
+
+  <!-- VENDORS -->
+  <section class="section">
+    <div class="section-tag">People Mike would call himself</div>
+    <div class="section-title">The Charlotte pros who actually show up</div>
+    <div class="section-sub">No paid placements. No referral kickbacks. Every vendor earned their spot through performance and track record with Mike's clients.</div>
+    <div class="vendor-grid">
+      <div class="vendor-card"><div class="vendor-cat">Moving</div><div class="vendor-name">Queen City Movers</div><span class="vendor-status preferred">Preferred</span></div>
+      <div class="vendor-card"><div class="vendor-cat">Inspection</div><div class="vendor-name">Carolina Home Inspect</div><span class="vendor-status vetted">Vetted</span></div>
+      <div class="vendor-card"><div class="vendor-cat">Mortgage</div><div class="vendor-name">Piedmont Lending Co.</div><span class="vendor-status preferred">Preferred</span></div>
+      <div class="vendor-card"><div class="vendor-cat">Legal / Title</div><div class="vendor-name">Uptown Title & Escrow</div><span class="vendor-status vetted">Vetted</span></div>
+      <div class="vendor-card"><div class="vendor-cat">Insurance</div><div class="vendor-name">Carolinas Coverage Group</div><span class="vendor-status vetted">Vetted</span></div>
+      <div class="vendor-card"><div class="vendor-cat">Storage</div><div class="vendor-name">SouthPark Storage Solutions</div><span class="vendor-status vetted">Vetted</span></div>
+    </div>
+  </section>
+
+  <!-- AGENT â MIKE -->
+  <section class="section agent-section">
+    <div class="agent-inner">
+      <div>
+        <div class="agent-avatar" id="cfg-avatar">M</div>
+        <div class="agent-title">The person behind the platform</div>
+        <div class="agent-name" id="cfg-name">Mike</div>
+        <div class="agent-role" id="cfg-role">Charlotte Relocation Specialist</div>
+        <div class="agent-stats">
+          <div><div class="ag-stat-num" id="cfg-years">12+</div><div class="ag-stat-label">Years in Charlotte</div></div>
+          <div><div class="ag-stat-num" id="cfg-clients">400+</div><div class="ag-stat-label">Clients relocated</div></div>
+          <div><div class="ag-stat-num" id="cfg-rating">5â</div><div class="ag-stat-label">Avg. review</div></div>
+        </div>
+        <button class="btn-gold" onclick="document.getElementById('lead-section').scrollIntoView({behavior:'smooth'})">Schedule a 20-min Charlotte briefing â</button>
+      </div>
+      <div>
+        <div class="agent-bio" id="cfg-bio">"Most people relocating to Charlotte spend weeks piecing together information that I can hand them in 20 minutes. I built this platform so that every client â whether they work with me or not â arrives informed, prepared, and with money in their pocket."</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">
+          <div style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:6px;padding:14px 18px;flex:1;min-width:140px;">
+            <div style="font-size:11px;color:rgba(232,234,240,0.4);margin-bottom:4px;letter-spacing:0.04em;">Specialties</div>
+            <div style="font-size:13px;color:#e8eaf0;line-height:1.6;">First-time buyers, corporate relo, investment</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:6px;padding:14px 18px;flex:1;min-width:140px;">
+            <div style="font-size:11px;color:rgba(232,234,240,0.4);margin-bottom:4px;letter-spacing:0.04em;">Response time</div>
+            <div style="font-size:13px;color:#e8eaf0;line-height:1.6;">Within 2 business hours</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:6px;padding:14px 18px;flex:1;min-width:140px;">
+            <div style="font-size:11px;color:rgba(232,234,240,0.4);margin-bottom:4px;letter-spacing:0.04em;">IDX / MLS Access</div>
+            <div style="font-size:13px;color:#e8eaf0;line-height:1.6;">Live Charlotte listings, updated daily</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEAD CAPTURE -->
+  <section class="section lead-section" id="lead-section">
+    <div class="lead-inner">
+      <div class="section-tag">Let's talk</div>
+      <div class="section-title">Get your free Charlotte relocation guide</div>
+      <div class="section-sub" style="margin:0 auto 0;">Tell Mike a bit about your move and he'll send you a personalized guide within 24 hours â neighborhoods, programs, and a custom checklist.</div>
+      <form class="lead-form" id="lead-form" onsubmit="submitLead(event)">
+        <div class="lead-row">
+          <input class="lead-input" type="text" placeholder="First name" required id="lead-fname"/>
+          <input class="lead-input" type="text" placeholder="Last name" required id="lead-lname"/>
+        </div>
+        <input class="lead-input" type="email" placeholder="Email address" required id="lead-email"/>
+        <input class="lead-input" type="tel" placeholder="Phone number (optional)" id="lead-phone"/>
+        <div class="lead-row">
+          <select class="lead-select" id="lead-timeline">
+            <option value="">Timeline to move</option>
+            <option>ASAP (within 30 days)</option>
+            <option>1â3 months</option>
+            <option>3â6 months</option>
+            <option>6â12 months</option>
+            <option>Just researching</option>
+          </select>
+          <select class="lead-select" id="lead-budget">
+            <option value="">Budget range</option>
+            <option>Under $300k</option>
+            <option>$300kâ$450k</option>
+            <option>$450kâ$600k</option>
+            <option>$600kâ$800k</option>
+            <option>$800k+</option>
+          </select>
+        </div>
+        <input class="lead-input" type="text" placeholder="Where are you moving from?" id="lead-from"/>
+        <button type="submit" class="lead-submit">Send me the free guide â</button>
+        <div class="lead-privacy">ð Your info is never shared. Mike will reach out personally within 24 hours.</div>
+      </form>
+      <div id="lead-success">â Got it! Mike will be in touch within 24 hours with your personalized Charlotte guide.</div>
+    </div>
+    <script>
+      // Values come from CONFIG block in <head> â edit there, not here
+      const AIRTABLE_PAT = CONFIG.airtablePAT;
+      const AIRTABLE_URL = CONFIG.airtableURL;
+
+      async function submitLead(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Sendingâ¦';
+
+        const firstName = document.getElementById('lead-fname').value.trim();
+        const lastName  = document.getElementById('lead-lname').value.trim();
+
+        const payload = {
+          fields: {
+            'Full Name':      `${firstName} ${lastName}`.trim(),
+            'Email':          document.getElementById('lead-email').value.trim(),
+            'Phone':          document.getElementById('lead-phone').value.trim(),
+            'Timeline':       document.getElementById('lead-timeline').value,
+            'Budget':         document.getElementById('lead-budget').value,
+            'Moving From':    document.getElementById('lead-from').value.trim(),
+            'Status':         'New',
+            'Date Submitted': new Date().toISOString()
+          }
+        };
+
+        try {
+          const res = await fetch(AIRTABLE_URL, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_PAT}`,
+              'Content-Type':  'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error(`Airtable error ${res.status}`);
+          document.getElementById('lead-form').style.display    = 'none';
+          document.getElementById('lead-success').style.display = 'block';
+        } catch (err) {
+          console.error('Lead submission failed:', err);
+          btn.disabled    = false;
+          btn.textContent = 'Request my free guide â';
+          alert('Something went wrong â please email ' + CONFIG.agentEmail + ' directly and he\'ll be right with you!');
+        }
+      }
+    </script>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div style="display:flex;align-items:center;">
+      <svg viewBox="0 0 200 44" width="160" height="36" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="22" r="14" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
+        <ellipse cx="24" cy="22" rx="14" ry="5" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+        <ellipse cx="24" cy="22" rx="6" ry="14" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+        <line x1="10" y1="22" x2="38" y2="22" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+        <circle cx="24" cy="13" r="3" fill="#c8a96e"/>
+        <circle cx="24" cy="13" r="1.2" fill="#0a0f1e"/>
+        <text x="48" y="20" font-family="Inter,sans-serif" font-size="15" font-weight="500" fill="#ffffff" letter-spacing="0.01em">Charlotte<tspan font-weight="400" fill="#c8a96e">Relo</tspan></text>
+        <text x="49" y="33" font-family="Inter,sans-serif" font-size="8.5" font-weight="400" letter-spacing="0.22em" fill="rgba(232,234,240,0.35)">CONCIERGE RELOCATION</text>
+      </svg>
+    </div>
+    <div class="footer-links">
+      <a>Neighborhoods</a>
+      <a>Programs</a>
+      <a>Vendors</a>
+      <a id="cfg-foot-agent">Meet Mike</a>
+    </div>
+    <div class="footer-text">Â© 2026 Â· Charlotte, NC Â· All rights reserved</div>
+  </footer>
+
+</div>
+
+<script>
+// Apply CONFIG values to DOM + inject IDX when provided
+document.addEventListener('DOMContentLoaded', () => {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('cfg-avatar',     CONFIG.agentInitial);
+  set('cfg-name',       CONFIG.agentName);
+  set('cfg-role',       CONFIG.agentRole);
+  set('cfg-bio',        CONFIG.agentBio);
+  set('cfg-years',      CONFIG.agentYears);
+  set('cfg-clients',    CONFIG.agentClients);
+  set('cfg-rating',     CONFIG.agentRating);
+  set('cfg-nav-agent',  'Meet ' + CONFIG.agentName);
+  set('cfg-foot-agent', 'Meet ' + CONFIG.agentName);
+
+  // Inject IDX embed code when provided
+  if (CONFIG.idxEmbedCode && CONFIG.idxEmbedCode.trim()) {
+    const slot = document.getElementById('idx-embed');
+    if (slot) slot.innerHTML = CONFIG.idxEmbedCode;
+  }
+});
+</script>
+</body>
+</html>
